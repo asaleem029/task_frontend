@@ -1,0 +1,112 @@
+{
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:482513449227:task-definition/dev-admin-portal:2",
+    "containerDefinitions": [
+        {
+            "name": "dev-admin-portal",
+            "image": "482513449227.dkr.ecr.us-east-1.amazonaws.com/dev-admin-portal:ca85824b88a8be1b5c4ecbe71614e5733599f299",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "dev-admin-portal-3005-tcp",
+                    "containerPort": 3005,
+                    "hostPort": 3005,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "command": [
+                "npm",
+                "run",
+                "start"
+            ],
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/dev-admin-portal",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "healthCheck": {
+                "command": [
+                    "CMD-SHELL",
+                    "curl -f http://localhost:3005/ || exit 1"
+                ],
+                "interval": 45,
+                "timeout": 5,
+                "retries": 3,
+                "startPeriod": 200
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "dev-admin-portal",
+    "taskRoleArn": "arn:aws:iam::482513449227:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::482513449227:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 2,
+    "volumes": [],
+    "status": "ACTIVE",
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.28"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.container-health-check"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
+        }
+    ],
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "256",
+    "memory": "512",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2024-11-22T12:34:12.126Z",
+    "registeredBy": "arn:aws:iam::482513449227:root",
+    "tags": []
+}
