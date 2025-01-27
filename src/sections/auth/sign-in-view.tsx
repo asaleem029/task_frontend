@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
@@ -78,6 +79,13 @@ export function SignInView() {
       >
         Sign in
       </LoadingButton>
+      
+      <Typography variant="body2" sx={{ alignSelf: 'center' }}>
+        Dont have an account?{' '}
+        <Link to='/sign-up' style={{ textDecoration: 'none', color: 'blue' }}>
+          Sign up
+        </Link>
+      </Typography>
     </Box>
   );
 

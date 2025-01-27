@@ -92,11 +92,6 @@ export const TaskListView = () => {
         ...dataFiltered,
         {
           name: '',
-          slug: '',
-          accessLevel: 0,
-          isActive: false,
-          isManagerial: false,
-          hasModificationAccess: false,
           description: ''
         }
       ]);
