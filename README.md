@@ -19,7 +19,7 @@ The **TASK CRUD PORTAL** is a powerful management interface for user. This porta
 ## Tech Stack
 - **Frontend**: [React.js]
 - **Styling**: CSS Modules or Tailwind CSS (customizable as needed).
-- **Backend Services**: API integrations with URQA’s core backend services for handling organizations, roles, and plans.
+- **Backend Services**: API integrations with backend services.
   
 ## Getting Started
 

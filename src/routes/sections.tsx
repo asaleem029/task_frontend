@@ -15,8 +15,8 @@ import { DashboardLayout } from 'src/layouts/dashboard';
 export const HomePage = lazy(() => import('src/pages/home'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
-export const RoleListPage = lazy(() => import('src/pages/role-list'));
-export const NewRolePage = lazy(() => import('src/pages/add-role'));
+export const TaskListPage = lazy(() => import('src/pages/task-list'));
+export const NewTaskPage = lazy(() => import('src/pages/add-task'));
 // ----------------------------------------------------------------------
 
 const renderFallback = (
@@ -46,8 +46,8 @@ export function Router() {
       ),
       children: [
         { element: <HomePage />, index: true },
-        { path: 'roles', element: <RoleListPage /> },
-        { path: 'new-role', element: <NewRolePage /> },
+        { path: 'tasks', element: <TaskListPage /> },
+        { path: 'new-task', element: <NewTaskPage /> },
       ],
     },
     {

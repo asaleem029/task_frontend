@@ -2,7 +2,7 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { CreateRoleView } from 'src/sections/roleList/view';
+import { CreateTaskView } from 'src/sections/taskList/view';
 
 // ----------------------------------------------------------------------
 
@@ -12,7 +12,7 @@ const Page = () => (
         <title> {`New Plan - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <CreateRoleView />
+      <CreateTaskView />
     </>
   )
 

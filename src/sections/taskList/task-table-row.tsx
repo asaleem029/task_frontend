@@ -15,45 +15,36 @@ import {
   , TextField, CircularProgress
 } from '@mui/material';
 
-import { createRole, updateRole } from 'src/helpers/api/api';
+import { createTask, updateTask } from 'src/helpers/api/api';
 
 import validate from "./view/validation";
 
 import type { IFormValues } from "./view/validation";
 
-export type RoleProps = {
+export type TaskProps = {
   id: string;
   name: string;
   slug: string;
-  accessLevel: number;
   description: string;
-  isActive: string;
-  isManagerial: boolean;
-  hasModificationAccess: boolean;
   createdAt: string;
 };
 
-type RoleTableRowProps = {
-  row: RoleProps;
+type TaskTableRowProps = {
+  row: TaskProps;
   index: number;
   page: number;
   rowsPerPage: number;
   handleCancel: any;
-  fetchRoles: any;
+  fetchTasks: any;
   addNewRow: any;
 };
 
 const initialValues: IFormValues = {
   name: '',
-  slug: '',
-  accessLevel: 0,
-  isActive: false,
-  hasModificationAccess: false,
-  isManagerial: false,
   description: ''
 };
 
-export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetchRoles, addNewRow }: RoleTableRowProps) => {
+export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetchTasks, addNewRow }: TaskTableRowProps) => {
   const rowIndex = index + 1;
   const rowId = rowIndex + page * rowsPerPage;
   const [loading, setLoading] = useState(false);
@@ -66,36 +57,17 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
   ) => {
     const { name, value } = e.target;
 
-    setValues((prevValues: any) => {
-      const updatedValues = { ...prevValues, [name]: value };
-
-      // Handle specific cases
-      if (name === 'hasModificationAccess') {
-        updatedValues.hasModificationAccess = !prevValues.hasModificationAccess;
-      }
-      else if (name === 'isActive') {
-        updatedValues.isActive = !prevValues.isActive;
-      }
-      else if (name === 'isManagerial') {
-        updatedValues.isManagerial = !prevValues.isManagerial;
-      }
-      else if (name === 'accessLevel') {
-        const cleanedValue = value.replace(/[^0-9.]/g, ''); // Remove all non-numeric characters except for '.'
-        updatedValues.accessLevel = cleanedValue ? Number(cleanedValue) : 0;
-      }
-      else if (name === 'name') {
-        updatedValues.slug = value.toUpperCase().replace(/ /g, "_");
-      }
-
-      return updatedValues;
+    setValues({
+      ...values,
+      [name]: value,
     });
 
     // Reset errors
     setErrors({});
   };
 
-  // HANDLE ROLE CREATION
-  const handleRoleCreation = async () => {
+  // HANDLE TASK CREATION
+  const handleTaskCreation = async () => {
     setLoading(true);
     const validationErrors = validate(values);
 
@@ -108,25 +80,15 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     try {
       const payLoad = {
         name: values.name,
-        slug: values.slug,
-        accessLevel: values.accessLevel,
-        hasModificationAccess: values.hasModificationAccess,
-        isActive: values.isActive,
-        isManagerial: values.isManagerial,
-        description: values.description !== '' ? values.description : null
+        description: values.description
       };
 
-      const newRole = await createRole(payLoad);
+      const newTask = await createTask(payLoad);
 
-      if (newRole.success) {
-        toast.success(newRole.userMessage);
-        fetchRoles(0)
-        setValues(initialValues);
-      } else {
-        toast.error(newRole.userMessage || 'An error occurred while creating the plan.');
-      }
+      console.log(newTask)
+
     } catch (error) {
-      console.error('Error creating plan:', error);
+      console.error('Error creating task:', error);
       toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -138,11 +100,6 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     setValues(
       {
         name: row.name,
-        slug: row.slug,
-        accessLevel: row.accessLevel,
-        isActive: row.isActive,
-        hasModificationAccess: row.hasModificationAccess,
-        isManagerial: row.isManagerial,
         description: row.description
       }
     )
@@ -153,7 +110,7 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     setValues(initialValues)
   }
 
-  const handleRoleUpdation = async (id: number) => {
+  const handleTaskUpdation = async (id: number) => {
     setLoading(true);
     const validationErrors = validate(values);
 
@@ -166,26 +123,14 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     try {
       const payLoad = {
         name: values.name,
-        slug: values.slug,
-        accessLevel: values.accessLevel,
-        hasModificationAccess: values.hasModificationAccess,
-        isActive: values.isActive,
-        isManagerial: values.isManagerial,
-        description: values.description !== '' ? values.description : null
+        description: values.description
       };
 
-      const roleUpdate = await updateRole(id, payLoad);
+      const taskUpdate = await updateTask(id, payLoad);
 
-      if (roleUpdate.success) {
-        toast.success(roleUpdate.userMessage);
-        setIsEditing(false)
-        setValues(initialValues);
-        fetchRoles(0)
-      } else {
-        toast.error(roleUpdate.userMessage || 'An error occurred while creating the plan.');
-      }
+      console.log(taskUpdate)
     } catch (error) {
-      console.error('Error creating plan:', error);
+      console.error('Error updating task:', error);
       toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -213,71 +158,6 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
           />
         ) : (
           row.name
-        )}
-      </TableCell>
-
-      <TableCell component="th" scope="row">
-        {(!row.id && addNewRow) || (row.id && isEditing) ? (
-          <TextField
-            label="Slug"
-            variant="outlined"
-            fullWidth
-            name="slug"
-            value={values.slug}
-            autoComplete="off"
-            disabled
-          />
-        ) : (
-          row.slug
-        )}
-      </TableCell>
-
-      <TableCell component="th" scope="row">
-        {(!row.id && addNewRow) || (row.id && isEditing) ? (
-          <TextField
-            label="Access Level"
-            variant="outlined"
-            fullWidth
-            name="accessLevel"
-            type='number'
-            value={values.accessLevel}
-            onChange={handleChange}
-            autoComplete="off"
-            error={errors.accessLevel}
-            helperText={errors.accessLevel ?? errors.accessLevel}
-          />
-        ) : (
-          row.accessLevel
-        )}
-      </TableCell>
-
-      <TableCell component="th" scope="row">
-        {(!row.id && addNewRow) || (row.id && isEditing) ? (
-          <Checkbox name="isActive" checked={values.isActive} onChange={handleChange} />
-        ) : row.id && row.isActive ? (
-          'Yes'
-        ) : (
-          'No'
-        )}
-      </TableCell>
-
-      <TableCell component="th" scope="row">
-        {(!row.id && addNewRow) || (row.id && isEditing) ? (
-          <Checkbox name="isManagerial" checked={values.isManagerial} onChange={handleChange} />
-        ) : row.id && row.isManagerial ? (
-          'Yes'
-        ) : (
-          'No'
-        )}
-      </TableCell>
-
-      <TableCell component="th" scope="row">
-        {(!row.id && addNewRow) || (row.id && isEditing) ? (
-          <Checkbox name="hasModificationAccess" checked={values.hasModificationAccess} onChange={handleChange} />
-        ) : row.id && row.hasModificationAccess ? (
-          'Yes'
-        ) : (
-          'No'
         )}
       </TableCell>
 
@@ -319,7 +199,7 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
                 variant="contained"
                 sx={{ mt: 2 }}
                 disabled={loading}
-                onClick={handleRoleCreation}
+                onClick={handleTaskCreation}
               >
                 {loading ? <CircularProgress size="1rem" /> : 'Save'}
               </LoadingButton>
@@ -347,7 +227,7 @@ export const RoleTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
                   variant="contained"
                   sx={{ mt: 2 }}
                   disabled={loading}
-                  onClick={() => handleRoleUpdation(Number(row.id))}
+                  onClick={() => handleTaskUpdation(Number(row.id))}
                 >
                   {loading ? <CircularProgress size="1rem" /> : 'Update'}
                 </LoadingButton>

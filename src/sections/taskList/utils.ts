@@ -1,4 +1,4 @@
-import type { RoleProps } from './role-table-row';
+import type { TaskProps } from './task-table-row';
 
 // ----------------------------------------------------------------------
 
@@ -53,7 +53,7 @@ export function getComparator<Key extends keyof any>(
 // ----------------------------------------------------------------------
 
 type ApplyFilterProps = {
-  inputData: RoleProps[];
+  inputData: TaskProps[];
   filterName: string;
   comparator: (a: any, b: any) => number;
 };
@@ -70,8 +70,8 @@ export const applyFilter = ({ inputData, comparator, filterName }: ApplyFilterPr
   inputData = stabilizedThis.map((el) => el[0]);
 
   if (filterName) {
-    inputData = inputData.filter((role) =>
-      Object.values(role).some(value => {
+    inputData = inputData.filter((task) =>
+      Object.values(task).some(value => {
         if (value != null) {
           return value.toString().toLowerCase().includes(filterName.toLowerCase());
         }

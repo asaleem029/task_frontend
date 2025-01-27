@@ -8,14 +8,14 @@ import { visuallyHidden } from './utils';
 
 // ----------------------------------------------------------------------
 
-type RoleTableHeadProps = {
+type TaskTableHeadProps = {
   orderBy: string;
   order: 'asc' | 'desc';
   onSort: (id: string) => void;
   headLabel: Record<string, any>[];
 };
 
-export const RoleTableHead = ({ order, onSort, orderBy, headLabel }: RoleTableHeadProps) => (
+export const TaskTableHead = ({ order, onSort, orderBy, headLabel }: TaskTableHeadProps) => (
     <TableHead>
       <TableRow>
         {headLabel.map((headCell) => (

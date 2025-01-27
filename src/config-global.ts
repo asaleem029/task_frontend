@@ -5,5 +5,5 @@ export type ConfigValue = {
 // ----------------------------------------------------------------------
 
 export const CONFIG: ConfigValue = {
-  appName: 'URQA Super Admin'
+  appName: 'Task CRUD'
 };

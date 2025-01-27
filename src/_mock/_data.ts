@@ -11,7 +11,7 @@ import {
 
 export const _myAccount = {
   displayName: 'ADMIN',
-  email: 'admin@urqa.com',
+  email: 'admin@gmail.com',
   photoURL: '/assets/images/avatar/avatar-25.webp',
 };
 

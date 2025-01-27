@@ -10,24 +10,24 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { fetchRolesList } from 'src/helpers/api/api';
+import { fetchTasksList } from 'src/helpers/api/api';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
 import { Scrollbar } from 'src/components/scrollbar';
 
 import { TableNoData } from '../table-no-data';
-import { RoleTableRow } from '../role-table-row';
-import { RoleTableHead } from '../role-table-head';
+import { TaskTableRow } from '../task-table-row';
+import { TaskTableHead } from '../task-table-head';
 import { applyFilter, getComparator } from '../utils';
-import { RoleTableToolbar } from '../role-table-toolbar';
+import { TaskTableToolbar } from '../task-table-toolbar';
 
-import type { RoleProps } from '../role-table-row';
+import type { TaskProps } from '../task-table-row';
 
-export const RoleListView = () => {
+export const TaskListView = () => {
   // const navigate = useNavigate();
   const [filterName, setFilterName] = useState('');
-  const [rolesList, setRolesList] = useState<any[]>([]);
+  const [tasksList, setTasksList] = useState<any[]>([]);
   const [pagination, setPagination] = useState<any>();
   const [page, setPage] = useState(0);
   const [orderBy, setOrderBy] = useState('accessLevel');
@@ -35,19 +35,19 @@ export const RoleListView = () => {
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [addNewRow, setAddNewRow] = useState(false);
 
-  // FETCH ROLES LIST
-  const fetchRoles = async (pageNo: number) => {
-    const response = await fetchRolesList(pageNo)
+  // FETCH TASKS LIST
+  const fetchTasks = async (pageNo: number) => {
+    const response = await fetchTasksList(pageNo)
 
     if (response) {
-      setPagination(response.pagination);
-      setRolesList(response.data);
+      // setPagination(response.pagination);
+      // setTasksList(response.data);
     }
   };
 
-  // SET ROLES LIST IN DATA FILTERED
-  const dataFiltered: RoleProps[] = applyFilter({
-    inputData: rolesList,
+  // SET TASKS LIST IN DATA FILTERED
+  const dataFiltered: TaskProps[] = applyFilter({
+    inputData: tasksList,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -61,7 +61,7 @@ export const RoleListView = () => {
   // HANDLE PAGE CHANGING
   const onChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
     setPage(newPage);
-    fetchRoles(newPage + 1);
+    fetchTasks(newPage + 1);
   };
 
   // HANDLE TABLE SPRTING
@@ -75,20 +75,20 @@ export const RoleListView = () => {
   );
 
   useEffect(() => {
-    fetchRoles(0);
+    fetchTasks(0);
   }, []);
 
-  // // HANDLE ADD NEW ROLE
+  // // HANDLE ADD NEW TASK
   // const handleAddNewRow = () => {
-  //   navigate('/new-role');
+  //   navigate('/new-task');
   // };
 
   const handleAddNewRow = () => {
-    const hasEmptyRow = rolesList.some(role => !role.id);
+    const hasEmptyRow = tasksList.some(task => !task.id);
 
     if (!hasEmptyRow) {
       setAddNewRow(true)
-      setRolesList([
+      setTasksList([
         ...dataFiltered,
         {
           name: '',
@@ -107,15 +107,15 @@ export const RoleListView = () => {
 
   // HANDLE CANCEL BUTTON
   const handleCancel = () => {
-    const filteredList = dataFiltered.filter(role => role.id); // Remove rows without an id
-    setRolesList(filteredList);
+    const filteredList = dataFiltered.filter(tasks => tasks.id); // Remove rows without an id
+    setTasksList(filteredList);
   };
 
   return (
     <DashboardContent>
       <Box display="flex" alignItems="center" mb={5}>
         <Typography variant="h4" flexGrow={1}>
-          Roles List
+          Tasks List
         </Typography>
 
         <Button
@@ -124,12 +124,12 @@ export const RoleListView = () => {
           startIcon={<Iconify icon="mingcute:add-line" />}
           onClick={handleAddNewRow}
         >
-          New Role
+          New Task
         </Button>
       </Box>
 
       <Card>
-        <RoleTableToolbar
+        <TaskTableToolbar
           filterName={filterName}
           onFilterName={(event: React.ChangeEvent<HTMLInputElement>) => {
             setFilterName(event.target.value);
@@ -140,25 +140,20 @@ export const RoleListView = () => {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
-              <RoleTableHead
+              <TaskTableHead
                 order={order}
                 orderBy={orderBy}
                 onSort={onSort}
                 headLabel={[
                   { id: '#', label: '#' },
                   { id: 'name', label: 'Name' },
-                  { id: 'slug', label: 'Slug' },
-                  { id: 'accessLevel', label: 'Access Level' },
-                  { id: 'isActive', label: 'Is-Active' },
-                  { id: 'isManagerial', label: 'Is-Managerial' },
-                  { id: 'hasModificationAccess', label: 'Has Modification Access' },
                   { id: 'description', label: 'Description' },
                   { id: '--', label: '--' },
                 ]}
               />
               <TableBody>
                 {dataFiltered.map((row, index) => (
-                  <RoleTableRow
+                  <TaskTableRow
                     key={row.id}
                     row={row}
                     index={index}
@@ -166,7 +161,7 @@ export const RoleListView = () => {
                     rowsPerPage={rowsPerPage}
                     addNewRow={addNewRow}
                     handleCancel={handleCancel}
-                    fetchRoles={fetchRoles}
+                    fetchTasks={fetchTasks}
                   />
                 ))}
                 {notFound && <TableNoData searchQuery={filterName} />}

@@ -2,15 +2,15 @@ import { Helmet } from 'react-helmet-async';
 
 import { CONFIG } from 'src/config-global';
 
-import { RoleListView } from 'src/sections/roleList/view';
+import { TaskListView } from 'src/sections/taskList/view';
 
 const Page = () => (
     <>
       <Helmet>
-        <title> {`Roles List - ${CONFIG.appName}`}</title>
+        <title> {`Tasks List - ${CONFIG.appName}`}</title>
       </Helmet>
 
-      <RoleListView />
+      <TaskListView />
     </>
   )
 

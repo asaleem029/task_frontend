@@ -8,8 +8,8 @@ export const navData = [
     icon: <DashboardIcon />,
   },
   {
-    title: 'Roles',
-    path: '/roles',
+    title: 'Tasks',
+    path: '/tasks',
     icon: <ListIcon />,
   },
 ];
