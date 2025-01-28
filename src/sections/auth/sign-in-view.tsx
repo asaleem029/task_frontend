@@ -11,25 +11,78 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { useRouter } from 'src/routes/hooks';
 
 import { Iconify } from 'src/components/iconify';
+import validate, { IFormErrors, IFormValues } from './signInValidation';
+import { signIn } from 'src/helpers/api/api';
+import { toast } from 'react-toastify';
+import { writeToLocalStorage } from 'src/helpers/ReadAndWriteLocalStorage';
 
 // ----------------------------------------------------------------------
 
+// INITIAL VALUES
+const initialValues: IFormValues = {
+  email: '',
+  password: '',
+};
+
 export function SignInView() {
   const router = useRouter();
-
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [values, setValues] = useState<any>(initialValues);
+  const [errors, setErrors] = useState<any>({});
+  const [loading, setLoading] = useState(false);
 
-  const handleSignIn = useCallback(() => {
-    if (email === 'admin' && password === 'P@kistan1') {
-      localStorage.setItem('isAuthenticated', 'true');
-      router.push('/');
-    } else {
-      setError('Invalid email or password');
+  // HANDLE ON CHANGE EVENT
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+
+    // SET VALUES
+    setValues({
+      ...values,
+      [name]: value,
+    });
+
+    // Reset errors
+    setErrors({});
+  };
+
+  // HANDLE ON SUBMIT EVENT
+  const handleSignIn = async () => {
+    setLoading(true); // Set loading state to true
+    const validationErrors = validate(values); // Validate form values
+
+    // Check if there are any validation errors
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setLoading(false);
+      return;
     }
-  }, [email, password, router]);
+
+    try {
+      // PAYLOAD
+      const payLoad = {
+        email: values.email,
+        password: values.password,
+      };
+
+      // CALLING SIGN-UP API
+      const response = await signIn(payLoad)
+      // SUCCESS REPONSE 
+      if (response?.success) {
+        toast.success(response.userMessage);
+        writeToLocalStorage('token', response?.data?.token); // SAVE TOKEN IN LOCAL STORAGE
+        writeToLocalStorage('user', response?.data?.user); // SAVE USER DETAILS IN LOCAL STORAGE
+        router.push('/'); // NAVIGATE TO HOME PAGE
+        setValues(initialValues); // RESET FORM
+      }
+    } catch (error) {
+      console.error('Error updating task:', error);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false); // Set loading state to false
+    }
+  }
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
@@ -37,18 +90,20 @@ export function SignInView() {
         fullWidth
         name="email"
         label="Email address"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={values.email}
+        onChange={handleChange}
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
+        error={errors?.email}
+        helperText={errors?.email}
       />
 
       <TextField
         fullWidth
         name="password"
         label="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        value={values.password}
+        onChange={handleChange}
         InputLabelProps={{ shrink: true }}
         type={showPassword ? 'text' : 'password'}
         InputProps={{
@@ -61,13 +116,9 @@ export function SignInView() {
           ),
         }}
         sx={{ mb: 3 }}
+        error={errors.password}
+        helperText={errors.password}
       />
-
-      {error && (
-        <Typography variant="body2" color="error" sx={{ mb: 2, alignSelf: 'start' }}>
-          {error}
-        </Typography>
-      )}
 
       <LoadingButton
         fullWidth
@@ -76,10 +127,11 @@ export function SignInView() {
         color="inherit"
         variant="contained"
         onClick={handleSignIn}
+        loading={loading ? true : false}
       >
         Sign in
       </LoadingButton>
-      
+
       <Typography variant="body2" sx={{ alignSelf: 'center' }}>
         Dont have an account?{' '}
         <Link to='/sign-up' style={{ textDecoration: 'none', color: 'blue' }}>

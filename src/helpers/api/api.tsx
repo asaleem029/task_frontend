@@ -9,6 +9,13 @@ export const signUp = async (payload: any) => {
   return response?.data ? response?.data : '';
 };
 
+export const signIn = async (payload: any) => {
+  const response = await axios.post(
+    `${BACKEND_SERVICES.authService}/auth/sign-in`, payload
+  );
+  return response?.data ? response?.data : '';
+};
+
 export const fetchTasksList = async (pageNo: number) => {
   console.log(pageNo);
   return 0;
