@@ -30,7 +30,7 @@ export const TaskListView = () => {
   const [tasksList, setTasksList] = useState<any[]>([]);
   const [pagination, setPagination] = useState<any>();
   const [page, setPage] = useState(0);
-  const [orderBy, setOrderBy] = useState('accessLevel');
+  const [orderBy, setOrderBy] = useState('name');
   const [rowsPerPage] = useState(10);
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [addNewRow, setAddNewRow] = useState(false);
@@ -39,9 +39,9 @@ export const TaskListView = () => {
   const fetchTasks = async (pageNo: number) => {
     const response = await fetchTasksList(pageNo)
 
-    if (response) {
-      // setPagination(response.pagination);
-      // setTasksList(response.data);
+    if (response?.success) {
+      setPagination(response?.pagination);
+      setTasksList(response?.data);
     }
   };
 
@@ -143,7 +143,7 @@ export const TaskListView = () => {
                   { id: '#', label: '#' },
                   { id: 'name', label: 'Name' },
                   { id: 'description', label: 'Description' },
-                  { id: '--', label: '--' },
+                  { id: '--', label: 'Actions' },
                 ]}
               />
               <TableBody>
