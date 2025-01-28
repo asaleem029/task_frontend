@@ -53,6 +53,7 @@ export const createTask = async (payload: any) => {
 // UPDATE TASK
 export const updateTask = async (id: number, payload: any) => {
   // UPDATE TASK
+  payload = { userId: userId, ...payload }
   const response = await axios.put(
     `${BACKEND_SERVICES.authService}/task/${id}`, payload
   );

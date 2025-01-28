@@ -191,7 +191,7 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
       }
     } catch (error) {
       console.error('Error updating task:', error);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(error?.response?.data?.message || 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
