@@ -22,7 +22,10 @@ export const fetchTasksList = async (pageNo: number) => {
 };
 
 export const createTask = async (payload: any) => {
-  console.log(payload)
+  const response = await axios.post(
+    `${BACKEND_SERVICES.authService}/task`, payload
+  );
+  return response?.data ? response?.data : '';
 };
 
 export const updateTask = async (id: number, payload: any) => {

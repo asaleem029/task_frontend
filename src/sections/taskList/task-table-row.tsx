@@ -19,6 +19,7 @@ import { createTask, updateTask } from 'src/helpers/api/api';
 import validate from "./view/validation";
 
 import type { IFormValues } from "./view/validation";
+import { readFromLocalStorage } from 'src/helpers/ReadAndWriteLocalStorage';
 
 export type TaskProps = {
   id: string;
@@ -77,14 +78,20 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     }
 
     try {
+      const user = readFromLocalStorage('user')
       const payLoad = {
         name: values.name,
-        description: values.description
+        description: values.description,
+        userId: user?.id
       };
 
-      const newTask = await createTask(payLoad);
+      const response = await createTask(payLoad);
 
-      console.log(newTask)
+      if (response?.success) {
+        toast.success(response?.userMessage)
+        setValues(initialValues)
+        fetchTasks(0)
+      }
 
     } catch (error) {
       console.error('Error creating task:', error);
