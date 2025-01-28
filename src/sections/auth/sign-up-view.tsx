@@ -13,6 +13,8 @@ import { Iconify } from 'src/components/iconify';
 import validate from './validation';
 
 import type { IFormValues } from './validation';
+import { signUp } from 'src/helpers/api/api';
+import { useNavigate } from 'react-router-dom';
 
 // INITIAL VALUES
 const initialValues: IFormValues = {
@@ -29,6 +31,7 @@ export function SignUpView() {
   const [values, setValues] = useState<any>(initialValues);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<any>({});
+  const navigate = useNavigate()
 
   // HANDLE ON CHANGE EVENT
   const handleChange = (
@@ -68,11 +71,18 @@ export function SignUpView() {
         confirmPassword: values.confirmPassword,
       };
 
-      console.log(payLoad)
+      // CALLING SIGN-UP API
+      const response = await signUp(payLoad)
 
+      // SUCCESS REPONSE 
+      if (response?.success) {
+        toast.success(response.userMessage);
+        navigate('/sign-in'); // NAVIGATE TO LOGIN PAGE
+        setValues(initialValues); // RESET FORM
+      }
     } catch (error) {
       console.error('Error updating task:', error);
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(error?.response?.data?.message);
     } finally {
       setLoading(false); // Set loading state to false
     }
