@@ -1,3 +1,4 @@
+import { readFromLocalStorage } from 'src/helpers/ReadAndWriteLocalStorage';
 import {
   _id,
   _times,
@@ -9,9 +10,10 @@ import {
 
 // ----------------------------------------------------------------------
 
+const user = readFromLocalStorage('user')
 export const _myAccount = {
-  displayName: 'ADMIN',
-  email: 'admin@gmail.com',
+  displayName: `${user?.firstName} ${user?.lastName}`,
+  email: `${user?.email}`,
   photoURL: '/assets/images/avatar/avatar-25.webp',
 };
 
