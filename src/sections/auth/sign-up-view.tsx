@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -8,13 +9,13 @@ import Typography from '@mui/material/Typography';
 import LoadingButton from '@mui/lab/LoadingButton';
 import InputAdornment from '@mui/material/InputAdornment';
 
+import { signUp } from 'src/helpers/api/api';
+
 import { Iconify } from 'src/components/iconify';
 
 import validate from './validation';
 
 import type { IFormValues } from './validation';
-import { signUp } from 'src/helpers/api/api';
-import { useNavigate } from 'react-router-dom';
 
 // INITIAL VALUES
 const initialValues: IFormValues = {

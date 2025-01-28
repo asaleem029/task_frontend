@@ -59,3 +59,14 @@ export const updateTask = async (id: number, payload: any) => {
   // RETURN RESPONSE
   return response?.data ? response?.data : '';
 };
+
+// DELETE TASK
+export const deleteTask = async (id: number) => {
+  // UPDATE TASK
+  const response = await axios.delete(
+    `${BACKEND_SERVICES.authService}/task/${id}`
+  );
+  console.log(response)
+  // RETURN RESPONSE
+  return response?.data ? response?.data : '';
+};

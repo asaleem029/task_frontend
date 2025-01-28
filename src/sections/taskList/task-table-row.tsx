@@ -7,19 +7,21 @@ import { toast } from 'react-toastify';
 
 import { LoadingButton } from '@mui/lab';
 import {
-  Box,
-  Button,
-  TableRow,
-  TableCell
-  , TextField, CircularProgress
+  Box, Dialog, Button, TableRow,
+  TableCell,
+  TextField,
+  Typography,
+  DialogTitle
+  , DialogContent, DialogActions,
+  CircularProgress
 } from '@mui/material';
 
-import { createTask, updateTask } from 'src/helpers/api/api';
+import { createTask, deleteTask, updateTask } from 'src/helpers/api/api';
+import { readFromLocalStorage } from 'src/helpers/ReadAndWriteLocalStorage';
 
 import validate from "./view/validation";
 
 import type { IFormValues } from "./view/validation";
-import { readFromLocalStorage } from 'src/helpers/ReadAndWriteLocalStorage';
 
 // TASK PROPS
 export type TaskProps = {
@@ -54,6 +56,17 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
   const [values, setValues] = useState<any>(initialValues);
   const [errors, setErrors] = useState<any>({});
   const [isEditing, setIsEditing] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  // Handle open delete dialog
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  // Handle close delete dialog
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   // HANDLE CHANGE
   const handleChange = (
@@ -119,6 +132,26 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
         description: row.description
       }
     )
+  }
+
+  // HANDLE DELETE
+  const handleDelete = async (id: number) => {
+    setLoading(true); // LOADING
+    try {
+      // DELETE TASK
+      const response = await deleteTask(id);
+
+      // SUCCESS
+      if (response?.success) {
+        toast.success(response?.userMessage) // TOAST SUCCESS MESSAGE
+        fetchTasks(0) // REFRESH TASK LIST
+      }
+    } catch (error) {
+      console.error('Error creating task:', error);
+      toast.error('An unexpected error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   }
 
   // HANDLE CANCEL EDIT
@@ -262,16 +295,45 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
             )
             :
             (
-              <LoadingButton
-                size="small"
-                type="button"
-                color="inherit"
-                variant="contained"
-                sx={{ mt: 2 }}
-                onClick={handleEdit}
-              >
-                Edit
-              </LoadingButton>
+              <Box display="flex" justifyContent="center" alignItems="center">
+                <LoadingButton
+                  size="small"
+                  type="button"
+                  color="inherit"
+                  variant="contained"
+                  sx={{ mt: 2, mr: 1 }}
+                  onClick={handleEdit}
+                >
+                  Edit
+                </LoadingButton>
+
+                <LoadingButton
+                  size="small"
+                  type="button"
+                  color="inherit"
+                  variant="contained"
+                  sx={{ mt: 2 }}
+                  onClick={handleOpen}
+                >
+                  Delete
+                </LoadingButton>
+
+                {/* Dialog Popup */}
+                <Dialog open={open} onClose={handleClose}>
+                  <DialogTitle>Confirm Delete</DialogTitle>
+                  <DialogContent>
+                    <Typography>Are you sure you want to delete this item?</Typography>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                      Cancel
+                    </Button>
+                    <Button onClick={() => handleDelete(Number(row.id))} color="error" variant="contained">
+                      Confirm
+                    </Button>
+                  </DialogActions>
+                </Dialog>
+              </Box>
             )
         }
       </TableCell>

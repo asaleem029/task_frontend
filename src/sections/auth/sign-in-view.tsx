@@ -1,5 +1,6 @@
+import { useState } from 'react';
+import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
-import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -10,11 +11,14 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
 
-import { Iconify } from 'src/components/iconify';
-import validate, { IFormErrors, IFormValues } from './signInValidation';
 import { signIn } from 'src/helpers/api/api';
-import { toast } from 'react-toastify';
 import { writeToLocalStorage } from 'src/helpers/ReadAndWriteLocalStorage';
+
+import { Iconify } from 'src/components/iconify';
+
+import validate from './signInValidation';
+
+import type { IFormValues } from './signInValidation';
 
 // ----------------------------------------------------------------------
 
@@ -127,7 +131,7 @@ export function SignInView() {
         color="inherit"
         variant="contained"
         onClick={handleSignIn}
-        loading={loading ? true : false}
+        loading={!!loading}
       >
         Sign in
       </LoadingButton>
