@@ -38,9 +38,15 @@ export function AccountPopover({ data = [], sx, ...other }: AccountPopoverProps)
     setOpenPopover(null);
   }, []);
 
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem('isAuthenticated'); // Clear authentication state
-    router.push('/sign-in'); // Redirect to sign-in page
+  const handleLogout = useCallback(async () => {
+    try {
+      // Clear localStorage (or cookies) and redirect
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      router.push('/sign-in');
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   }, [router]);
 
   return (
