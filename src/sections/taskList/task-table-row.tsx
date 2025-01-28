@@ -21,6 +21,7 @@ import validate from "./view/validation";
 import type { IFormValues } from "./view/validation";
 import { readFromLocalStorage } from 'src/helpers/ReadAndWriteLocalStorage';
 
+// TASK PROPS
 export type TaskProps = {
   id: string;
   name: string;
@@ -29,6 +30,7 @@ export type TaskProps = {
   createdAt: string;
 };
 
+// TASK TABLE ROW PROPS
 type TaskTableRowProps = {
   row: TaskProps;
   index: number;
@@ -39,6 +41,7 @@ type TaskTableRowProps = {
   addNewRow: any;
 };
 
+// INITIAL VALUES
 const initialValues: IFormValues = {
   name: '',
   description: ''
@@ -52,11 +55,13 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
   const [errors, setErrors] = useState<any>({});
   const [isEditing, setIsEditing] = useState(false);
 
+  // HANDLE CHANGE
   const handleChange = (
     e: SelectChangeEvent | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target; // DESTRUCTURE NAME AND VALUE
 
+    // SET VALUES
     setValues({
       ...values,
       [name]: value,
@@ -68,9 +73,10 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
 
   // HANDLE TASK CREATION
   const handleTaskCreation = async () => {
-    setLoading(true);
-    const validationErrors = validate(values);
+    setLoading(true); // LOADING
+    const validationErrors = validate(values); // VALIDATION
 
+    // VALIDATION
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setLoading(false);
@@ -78,19 +84,22 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     }
 
     try {
-      const user = readFromLocalStorage('user')
+      const user = readFromLocalStorage('user') // READ USER FROM LOCAL STORAGE
+      // PAYLOAD
       const payLoad = {
         name: values.name,
         description: values.description,
         userId: user?.id
       };
 
+      // CREATE TASK
       const response = await createTask(payLoad);
 
+      // SUCCESS
       if (response?.success) {
-        toast.success(response?.userMessage)
-        setValues(initialValues)
-        fetchTasks(0)
+        toast.success(response?.userMessage) // TOAST SUCCESS MESSAGE
+        setValues(initialValues) // RESET VALUES
+        fetchTasks(0) // REFRESH TASK LIST
       }
 
     } catch (error) {
@@ -101,6 +110,7 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     }
   };
 
+  // HANDLE EDIT
   const handleEdit = () => {
     setIsEditing(true)
     setValues(
@@ -111,15 +121,18 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     )
   }
 
+  // HANDLE CANCEL EDIT
   const handleCancelEdit = () => {
     setIsEditing(false)
     setValues(initialValues)
   }
 
+  // HANDLE TASK UPDATION
   const handleTaskUpdation = async (id: number) => {
-    setLoading(true);
-    const validationErrors = validate(values);
+    setLoading(true); // LOADING
+    const validationErrors = validate(values); // VALIDATION
 
+    // VALIDATION
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       setLoading(false);
@@ -127,14 +140,22 @@ export const TaskTableRow = ({ row, index, page, rowsPerPage, handleCancel, fetc
     }
 
     try {
+      // PAYLOAD
       const payLoad = {
         name: values.name,
         description: values.description
       };
 
-      const taskUpdate = await updateTask(id, payLoad);
+      // UPDATE TASK
+      const response = await updateTask(id, payLoad);
 
-      console.log(taskUpdate)
+      // SUCCESS
+      if (response?.success) {
+        toast.success(response?.userMessage) // TOAST SUCCESS MESSAGE
+        setValues(initialValues) // RESET VALUES
+        setIsEditing(false) // TOGGLE EDIT MODE
+        fetchTasks(0) // REFRESH TASK LIST
+      }
     } catch (error) {
       console.error('Error updating task:', error);
       toast.error('An unexpected error occurred. Please try again.');

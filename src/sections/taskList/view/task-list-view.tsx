@@ -37,45 +37,47 @@ export const TaskListView = () => {
 
   // FETCH TASKS LIST
   const fetchTasks = async (pageNo: number) => {
-    const response = await fetchTasksList(pageNo)
+    const response = await fetchTasksList(pageNo) // FETCH TASKS LIST
 
+    // SET TASKS LIST
     if (response?.success) {
-      setPagination(response?.pagination);
-      setTasksList(response?.data);
+      setPagination(response?.pagination); // SET PAGINATION
+      setTasksList(response?.data); // SET TASKS LIST
     }
   };
 
   // SET TASKS LIST IN DATA FILTERED
   const dataFiltered: TaskProps[] = applyFilter({
-    inputData: tasksList,
-    comparator: getComparator(order, orderBy),
-    filterName,
+    inputData: tasksList, // INPUT DATA
+    comparator: getComparator(order, orderBy), // GET COMPARATOR
+    filterName, // FILTER NAME
   });
-  const notFound = !dataFiltered.length && !!filterName;
+  const notFound = !dataFiltered.length && !!filterName; // NOT FOUND
 
   // HANDLE PAGE RESETING ON FILTERING
   const onResetPage = useCallback(() => {
+    // RESET PAGE
     setPage(0);
   }, []);
 
   // HANDLE PAGE CHANGING
   const onChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    setPage(newPage);
-    fetchTasks(newPage + 1);
+    setPage(newPage); // SET PAGE
+    fetchTasks(newPage + 1); // FETCH TASKS LIST
   };
 
   // HANDLE TABLE SPRTING
   const onSort = useCallback(
     (id: string) => {
-      const isAsc = orderBy === id && order === 'asc';
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
+      const isAsc = orderBy === id && order === 'asc'; // IS ASC
+      setOrder(isAsc ? 'desc' : 'asc'); // SET ORDER
+      setOrderBy(id); // SET ORDER BY
     },
     [order, orderBy]
   );
 
   useEffect(() => {
-    fetchTasks(0);
+    fetchTasks(0); // FETCH TASKS LIST
   }, []);
 
   // // HANDLE ADD NEW TASK
@@ -83,11 +85,14 @@ export const TaskListView = () => {
   //   navigate('/new-task');
   // };
 
+  // HANDLE ADD NEW ROW
   const handleAddNewRow = () => {
-    const hasEmptyRow = tasksList.some(task => !task.id);
+    const hasEmptyRow = tasksList.some(task => !task.id); // CHECK IF HAS EMPTY ROW
 
+    // ADD NEW ROW
     if (!hasEmptyRow) {
-      setAddNewRow(true)
+      setAddNewRow(true) // SET ADD NEW ROW
+      // ADD NEW ROW
       setTasksList([
         ...dataFiltered,
         {
@@ -103,7 +108,7 @@ export const TaskListView = () => {
   // HANDLE CANCEL BUTTON
   const handleCancel = () => {
     const filteredList = dataFiltered.filter(tasks => tasks.id); // Remove rows without an id
-    setTasksList(filteredList);
+    setTasksList(filteredList); // SET TASKS LIST
   };
 
   return (
@@ -153,10 +158,10 @@ export const TaskListView = () => {
                     row={row}
                     index={index}
                     page={page}
-                    rowsPerPage={rowsPerPage}
-                    addNewRow={addNewRow}
-                    handleCancel={handleCancel}
-                    fetchTasks={fetchTasks}
+                    rowsPerPage={rowsPerPage} // ROWS PER PAGE
+                    addNewRow={addNewRow} // ADD NEW ROW
+                    handleCancel={handleCancel} // HANDLE CANCEL BUTTON
+                    fetchTasks={fetchTasks} // FETCH TASKS
                   />
                 ))}
                 {notFound && <TableNoData searchQuery={filterName} />}
